@@ -2,7 +2,7 @@
 
 **Version** : 1.0, 24 novembre 2026. **Statut** : spécification et recette déterministe locale, **pas activation de recherche ni preuve d'amélioration empirique**.
 
-**Autorité** : `Mandat` du Google Sheets `1ND-b3FhP-1oTyYgzxFzC4_nbus6rgBpa8ODCZh94HIE`, version lue V6.9 ; SFD-01 à SFD-17 historiques dans `candidatures-ba/SFD_V0_4.md` au commit Git `3cee0b0bdd5efc0b5e76727cb01bda5dd32334c9`. Ce document numérote les nouveautés **SFD-DQ-01 à SFD-DQ-14**, sans renuméroter ni remplacer SFD-01 à SFD-17.
+**Autorité** : `Mandat` du Google Sheets canonique (identifiant conservé dans le mandat privé), version lue V6.9 ; SFD-01 à SFD-17 historiques dans `candidatures-ba/SFD_V0_4.md` au commit Git `3cee0b0bdd5efc0b5e76727cb01bda5dd32334c9`. Ce document numérote les nouveautés **SFD-DQ-01 à SFD-DQ-14**, sans renuméroter ni remplacer SFD-01 à SFD-17.
 
 ## Écart constaté et objectif
 
@@ -27,7 +27,7 @@ Le bilan opérationnel canonique du 23/11 à ~23:05 (Mandat!B42/B69) décrit des
 | DQ-11 | Aucune comparaison reproductible ancienne/nouvelle recherche | Pour chaque méthode, budget de requêtes identique et journal d'exécution distinct ; refuser budget incomparable, requêtes en double et items hors jeu étiqueté. Un benchmark synthétique n'établit pas de supériorité sur le marché. | T39–T42, T45–T48 |
 | DQ-12 | Classements favorisant salaire ou volume au détriment de l'admissibilité | Trier d'abord les offres qualifiées, ensuite le salaire fixe publié ; l'absence de salaire ne disqualifie pas. Mesurer *offres qualifiées uniques / minutes observées* séparément du nombre d'annonces et des dépôts. | T08, T37–T38 et mesure de campagne future |
 | DQ-13 | Faux rejets et faux PASS dus aux inconnues | Statuts explicites `EXCLUDE`, `PARK`, `PASS`, sans transformer l'inconnu en rejet définitif ni en éligibilité. Distinguer BdF/ACPR **employeur/client final** d'une ligne d'expérience au CV. | T09–T12, T16–T19, T27–T30 |
-| DQ-14 | Qualité de découverte confondue avec droit de candidater | Le module est **sans effet externe** : il ne transmet, n'ouvre pas de session ATS, n'envoie pas de courriel, ne réserve pas B83, ne modifie pas Mandat. `PASS` signifie **admissible pour le contrôle de dossier**, pas `SUBMITTED`. La passerelle SFD-05 à 17 et LM-QA R3 reste seule autorisée pour la transmission. | Absence de fonction réseau et de mutateur Sheets/Gmail ; intégration E2E = UNKNOWN |
+| DQ-14 | Qualité de découverte confondue avec droit de candidater | Le module est **sans effet externe** : il ne transmet, n'ouvre pas de session ATS, n'envoie pas de courriel, ne réserve pas B83, ne modifie pas Mandat. `PASS` signifie **admissible pour le contrôle de dossier**, pas `SUBMITTED`. La passerelle SFD-05 à 17 et LM-QA R3 reste seule autorisée pour la transmission. | T49–T52 : imports, effets de bord et immutabilité ; intégration E2E = UNKNOWN |
 
 ## Contrat d'entrée, de sortie et de preuve
 
@@ -35,7 +35,7 @@ Le bilan opérationnel canonique du 23/11 à ~23:05 (Mandat!B42/B69) décrit des
 - Entrée offre : employeur, référence, lien exact, contrat, localisation, missions projet, exigences annotées (`mandatory/preferred/unknown`), preuve officielle (`url`, `status`, `observed_at`, `reference` si présente) et `decision_as_of` horodaté ; tout fait candidat attribué au CV V3 et aux confirmations écrites du mandat.
 - Sortie : `PASS`, `PARK_*`, `EXCLUDE_*`, `ALREADY_TRACKED`, `BLOCK_DUPLICATE`, `NEW`, `PARK_POSSIBLE_ALIAS` ; motifs visibles ; aucune candidature soumise.
 - Métriques : requêtes planifiées/réellement effectuées, annonces distinctes, entreprises et secteurs distincts, doublons, ouvertures officielles, admissibles, `PARK` par motif, faux positifs/faux négatifs sur jeu gelé, minutes observées et rendement. Temps manquant = `UNKNOWN`.
-- Seuil de promotion : aucune promotion automatique sur 53 tests synthétiques. Exiger une campagne A/B sur sources **réellement consultées**, même budget mesuré, annotation des dossiers à l'aveugle et corroboration dans `Candidatures`, puis décision selon gain marginal et taux de faux positifs.
+- Seuil de promotion : aucune promotion automatique sur 57 tests synthétiques. Exiger une campagne A/B sur sources **réellement consultées**, même budget mesuré, annotation des dossiers à l'aveugle et corroboration dans `Candidatures`, puis décision selon gain marginal et taux de faux positifs.
 
 ## Contre-exemples et frontières
 
@@ -50,4 +50,4 @@ Le bilan opérationnel canonique du 23/11 à ~23:05 (Mandat!B42/B69) décrit des
 
 Exécution reproductible : `python3 -m unittest -v test_discovery_quality` dans ce dossier (stdlib uniquement) et `python3 -m compileall -q .`. Tous les cas doivent réussir. Chaque changement au moteur doit refaire la suite complète. Le module ne remplace pas `candidatures-ba/circuit.py`, les 22 tests historiques R3 ni le connecteur de transmission. **La qualification intégrée réelle (nouvelle méthode + données de marché réelles + Sheets + ATS) est distincte et reste UNKNOWN tant que non exécutée.**
 
-**État au 24/11** : 53 tests unitaires déterministes exécutés avec succès en local sur l'implémentation associée ; 0 offre réelle recherchée par ce code, 0 dépôt et 0 preuve d'amélioration prospective. En cas de divergence GitHub/local, le test du SHA publié doit être rejoué avant PASS distant.
+**État au 24/11** : 57 tests unitaires déterministes exécutés avec succès en local sur l'implémentation associée ; 0 offre réelle recherchée par ce code, 0 dépôt et 0 preuve d'amélioration prospective. En cas de divergence GitHub/local, le test du SHA publié doit être rejoué avant PASS distant.
