@@ -11,7 +11,6 @@ import re
 import unicodedata
 from collections import Counter
 from datetime import datetime, timedelta
-from dataclasses import dataclass
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 SECTORS = (
