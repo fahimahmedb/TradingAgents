@@ -1,4 +1,7 @@
+import ast
 import unittest
+from copy import deepcopy
+from pathlib import Path
 from discovery_quality import (
     ROLES, SECTORS, SOURCES, benchmark, canonical_url, classify_requirements,
     duplicate_status, qualify, ranked, search_plan,
@@ -164,6 +167,37 @@ class BenchmarkTests(unittest.TestCase):
         logs = executed({'old':1,'new':1})
         logs[0]['evidence_url'] = ''
         with self.assertRaises(ValueError): benchmark([],{'a':True},{'old':1,'new':1},logs)
+
+
+class ReadOnlyAndIntegrityTests(unittest.TestCase):
+    def test_49_only_pure_imports_in_discovery_module(self):
+        tree = ast.parse(Path(__file__).with_name('discovery_quality.py').read_text())
+        allowed = {'__future__', 'hashlib', 'json', 're', 'unicodedata', 'collections', 'datetime', 'urllib.parse'}
+        imports = [alias.name.split('.')[0] for node in ast.walk(tree) if isinstance(node, ast.Import)
+                   for alias in node.names]
+        froms = [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)]
+        self.assertTrue(all(name in allowed or name == 'urllib' for name in imports + froms))
+
+    def test_50_no_direct_side_effect_calls_in_discovery_module(self):
+        tree = ast.parse(Path(__file__).with_name('discovery_quality.py').read_text())
+        calls = [node.func.id for node in ast.walk(tree) if isinstance(node, ast.Call)
+                 and isinstance(node.func, ast.Name)]
+        self.assertFalse(set(calls) & {'open', 'exec', 'eval', 'compile', '__import__', 'input'})
+
+    def test_51_qualify_does_not_mutate_offer(self):
+        o=offer(requirements=[{'name':'english fluent','level':'preferred'}])
+        original=deepcopy(o)
+        qualify(o, {'english b1'})
+        self.assertEqual(o,original)
+
+    def test_52_benchmark_does_not_mutate_inputs(self):
+        records=[{'method':'old','id':'a','decision':'PASS'}]
+        labels={'a':True}
+        budgets={'old':1,'new':1}
+        executions=executed(budgets)
+        before=deepcopy((records,labels,budgets,executions))
+        benchmark(records,labels,budgets,executions)
+        self.assertEqual((records,labels,budgets,executions),before)
 
 
 if __name__ == '__main__':
