@@ -50,7 +50,7 @@ class QualifyTests(unittest.TestCase):
         self.assertEqual(qualify(offer(official_evidence=e))['status'], 'EXCLUDE_CLOSED')
     def test_14_aggregator_not_opening_proof(self): self.assertEqual(qualify(offer(official_evidence={}))['status'], 'PARK_OPENING')
     def test_15_unknown_opening_parks(self):
-        e={'url':'https://example.org/job','status':'unknown','observed_at':'date'}
+        e={'url':'https://example.org/job','status':'unknown','observed_at':'2026-11-24T09:00:00+01:00'}
         self.assertEqual(qualify(offer(official_evidence=e))['status'], 'PARK_OPENING')
     def test_16_no_operational_middle_office(self): self.assertEqual(qualify(offer(scope='operational'))['status'], 'EXCLUDE_ROLE')
     def test_17_pure_testing_out(self): self.assertEqual(qualify(offer(scope='pure_testing'))['status'], 'EXCLUDE_ROLE')
