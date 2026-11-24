@@ -1,8 +1,7 @@
 import unittest
-from copy import deepcopy
 from discovery_quality import (
-    SECTORS, ROLES, SOURCES, benchmark, canonical_url, classify_requirements,
-    duplicate_status, norm, qualify, ranked, search_plan,
+    ROLES, SECTORS, SOURCES, benchmark, canonical_url, classify_requirements,
+    duplicate_status, qualify, ranked, search_plan,
 )
 
 
